@@ -1,11 +1,8 @@
 var ItemHandler =  Class({
 
 	initialize: function(ctx) {
-	  var items;
-	  var ctx;
-	  var score;
-	  var speed;
-	  this.speed = 2;
+	  this.radius = 10;
+	  this.speed = 0.5;
 	  this.items = [];
 	  this.ctx = ctx;
 	  this.score = 0;
@@ -15,7 +12,7 @@ var ItemHandler =  Class({
 	  for(i=0;i < this.items.length; i++) {
 		  it = this.items[i];
 		  this.renderItem(it);
-		  if(this.items[i].x < 100) this.deleteItem(i);
+		  if(this.items[i].x < -(2*this.radius)) this.deleteItem(i);
 	  }
 	  this.drawScore();
 	},
@@ -27,12 +24,13 @@ var ItemHandler =  Class({
 
 	spawnItem: function(x, y) {
 	  // x,y-Pos, speed, context(canvas)
-	  var i = new Item(x, y, this.speed, this.ctx);
+	  var i = new Item(x, y, this.speed, this.radius, this.ctx);
 	  this.items.push(i);
 	},
 
 	deleteItem: function(index) {
-	  this.items.pop(index);
+	  //use shift to shift all other items in array one place up
+	  this.items.shift(index);
 	},
 
 	drawScore: function() {

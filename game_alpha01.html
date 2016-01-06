@@ -9,100 +9,49 @@
   </style>
 </head>
 <body>
+  <!-- Java class construct -->
+  <script type='text/javascript', src='java_class.js'></script>
+  <!-- Items to Pick up -->
+  <script type='text/javascript', src='Item.js'></script>
+  <!-- Item Handler Class -->
+  <script type='text/javascript', src='ItemHandler.js'></script>
 
   <canvas id="myCanvas" width="480" height="320"></canvas>
 
   <script>
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
+    var item_handler = new ItemHandler(ctx);
 
-    // define classes like in java
-    var Class = function(methods) {
-      var klass = function() {
-        this.initialize.apply(this, arguments);
-      };
-
-      for (var property in methods) {
-        klass.prototype[property] = methods[property];
-      }
-
-      if (!klass.prototype.initialize) klass.prototype.initialize = function(){};
-
-      return klass;
-    };
-
-    // class Ball (target)
-    var Ball = Class({
-
-      initialize: function(x, y, s) {
-        var x, y, r, speed;
-        this.speed = s;
-        this.r = 10;
-        this.x = x;
-        this.y = y;
-      },
-
-      draw: function() {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.r, 0, Math.PI*2);
-        ctx.fillStyle = "#000000";
-        ctx.fill();
-        ctx.closePath();
-      },
-      
-      update: function() {
-        if (this.x < 100) 
-          del(this);
-        this.x -= this.speed;
-      }
-
-    });
-
-
-    var ballRadius = 10;
     var score = 0;
     var lives = 3;
     var keyPressed = false;
 
-    var arr = [];
-    var x = canvas.width + 20;
-    var speed = 2;
+    var offset = canvas.width + 100;
 
     // TIMER EINBAUEN!
-    var timer = setInterval(spawnBall(x, Math.random() * canvas.height, Math.random()*3), 1000);
-    clearInterval(timer);
+    // JS can't multithread: no 2 intervals at once -> workaround
+    // setInterval(item_handler.spawnItem(offset, Math.random() * canvas.height),1000);
+
+    var iter = 0;
+    item_handler.spawnItem(offset, 200);
 
     function draw() {
+
       // clear the content every iteration.
       ctx.clearRect(0,0,canvas.width, canvas.height);
-      
+      iter++;
+      // time interval for spawn
+      if(iter > 100) {
+        item_handler.spawnItem(offset, Math.random() * canvas.height);
+        iter = 0;
+      }
 
-        for (i=0;i < arr.length;  i++) {
-          arr[i].update();
-          arr[i].draw();
-        }
-
-      drawScore();
-    }
-
-    function spawnBall(x, y, s) {
-      var b = new Ball(x, y, s);
-      arr.push(b);
-    }
-
-    function del(ball) {
-      arr.pop(ball);
-      ball = null;
-    }
-
-    function drawScore() {
-      ctx.font = "16px Arial";
-      ctx.fillStyle = "#0095DD";
-      ctx.fillText("Score: " + score, 8, 20);
+      item_handler.update();
     }
 
     // frameRate every 10 miliseconds
-    setInterval(draw, 30);
+    setInterval(draw, 10);
   </script>
 
 </body>

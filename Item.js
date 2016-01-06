@@ -1,12 +1,10 @@
 // class Item (target)
 var Item = Class({
 
-  initialize: function(x, y, s, context) {
-	var ctx;
-	var x, y, r, speed;
+  initialize: function(x, y, s, rad, context) {
 	this.ctx = context;
 	this.speed = s;
-	this.r = 10;
+	this.r = rad;
 	this.x = x;
 	this.y = y;
   },
@@ -23,4 +21,3 @@ var Item = Class({
 	this.x -= this.speed;
   }
 });
-
