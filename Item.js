@@ -5,19 +5,20 @@ var Item = Class({
 	this.ctx = context;
 	this.speed = s;
 	this.r = rad;
-	this.x = x;
-	this.y = y;
+	this.loc = new Vector2D(x,y);
   },
 
-  draw: function() {
+  render: function() {
 	this.ctx.beginPath();
-	this.ctx.arc(this.x, this.y, this.r, 0, Math.PI*2);
+	this.ctx.arc(this.loc.x, this.loc.y, this.r, 0, Math.PI*2);
 	this.ctx.fillStyle = "#000000";
 	this.ctx.fill();
 	this.ctx.closePath();
   },
   
   update: function() {
-	this.x -= this.speed;
+	this.loc.x -= this.speed;
+	this.render();
   }
+
 });
