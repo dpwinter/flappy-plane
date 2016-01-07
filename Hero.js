@@ -1,12 +1,12 @@
 var Hero = Class({
 
-	initialize: function(x, y, r, ctx) {
+	initialize: function(x, y) {
 	  this.loc = new Vector2D(x, y);
 	  this.velo = new Vector2D(0,0);
 	  this.acc = new Vector2D(0,0);
+	  this.r = 20;
 	  this.mass = 40;
-	  this.r = r;
-	  this.ctx = ctx;
+	  this.fill = "#FF0000";
 	},
 
 	applyForce: function(force) {
@@ -14,15 +14,7 @@ var Hero = Class({
 	  this.acc.addEquals(f);
 	},
 
-	render: function() {
-  	  this.ctx.beginPath();
-	  this.ctx.arc(this.loc.x, this.loc.y, this.r, 0, Math.PI*2);
-	  this.ctx.fillStyle = "#FF0000";
-	  this.ctx.fill();
-	  this.ctx.closePath();
-	},
-
-	update: function() {
+	updatePhysics: function() {
 	  this.velo.addEquals(this.acc);
 	  this.loc.addEquals(this.velo);
 	  this.acc.multiplyEquals(0);
@@ -34,9 +26,8 @@ var Hero = Class({
 	  else if(this.loc.y < 0 - this.r) this.loc.y = canvas.height;
 	},
 
-	display: function() {
-	  this.update();
+	update: function() {
 	  this.checkEdges();
-	  this.render();
+	  this.updatePhysics();
 	 }
 });

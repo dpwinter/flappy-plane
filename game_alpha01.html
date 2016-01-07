@@ -14,7 +14,7 @@
   <!-- Items to Pick up -->
   <script type='text/javascript', src='Item.js'></script>
   <!-- Item Handler Class -->
-  <script type='text/javascript', src='ItemHandler.js'></script>
+  <script type='text/javascript', src='GameHandler.js'></script>
   <!-- Vector library -->
   <script type='text/javascript', src='vector.js'></script>
   <!-- Hero Class -->
@@ -25,48 +25,25 @@
   <script>
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
-    var hero = new Hero(canvas.width/2, canvas.height/2, 20, ctx);
-    var item_handler = new ItemHandler(hero, ctx);
-
-    var speed = 2;
-
-    window.addEventListener('keydown', item_handler.userInput, false);
-
-    var score = 0;
-    var lives = 3;
-    var keyPressed = false;
-
-    var offset = canvas.width + 100;
-
-    var iter = 0;
-    var iterLimit = 100;
-    item_handler.spawnItem(offset, 200);
+    var game = new GameHandler(ctx, canvas);
+    window.addEventListener('keydown', this.userInput, false);
 
     function draw() {
-      // reset the transform matrix as it is cumulative
-      //ctx.setTransform(1,0,0,1,0,0);
       // clear the content every iteration.
       ctx.clearRect(0,0,canvas.width, canvas.height);
 
-      iter++;
-      // time interval for spawn
-      if(iter > iterLimit) {
-        item_handler.spawnItem(offset, getRandom(item_handler.radius, canvas.height - item_handler.radius));
-        iter = 0;
-        iterLimit = getRandom(50, 200);
-      }
-
-      hero.display();
-      //ctx.translate(hero.loc.x, 0);
-      item_handler.update();
+      game.update();
     }
 
     // frameRate every 10 miliseconds
     setInterval(draw, 30);
 
-    function getRandom(min, max) {
-      return Math.random() * (max - min) + min;
+    function userInput(e) {
+      game.hero.velo = new Vector2D(0,0);
+      // up force
+      game.hero.applyForce(new Vector2D(0, -50));
     }
+
   </script>
 
 </body>
