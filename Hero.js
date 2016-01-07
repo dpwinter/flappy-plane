@@ -2,16 +2,16 @@ var Hero = Class({
 
 	initialize: function(x, y, r, ctx) {
 	  this.loc = new Vector2D(x, y);
-	  this.velo = new Vector2D(0,1);
+	  this.velo = new Vector2D(0,0);
 	  this.acc = new Vector2D(0,0);
-	  this.mass = 1;
+	  this.mass = 40;
 	  this.r = r;
 	  this.ctx = ctx;
 	},
 
 	applyForce: function(force) {
-	  var f = new Vector2D(force, this.mass);
-	  this.acc.add(f);
+	  var f = force.divide(this.mass);
+	  this.acc.addEquals(f);
 	},
 
 	render: function() {
@@ -25,7 +25,7 @@ var Hero = Class({
 	update: function() {
 	  this.velo.addEquals(this.acc);
 	  this.loc.addEquals(this.velo);
-	  this.acc.multiply(0);
+	  this.acc.multiplyEquals(0);
 	},
 
 	checkEdges: function() {
@@ -35,7 +35,7 @@ var Hero = Class({
 	},
 
 	display: function() {
-	  // this.update();
+	  this.update();
 	  this.checkEdges();
 	  this.render();
 	 }

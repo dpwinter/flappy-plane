@@ -1,3 +1,4 @@
+// Handles Game Events
 var ItemHandler =  Class({
 
 	initialize: function(hero, ctx) {
@@ -11,13 +12,13 @@ var ItemHandler =  Class({
 
 	update: function() {
 	  for(i=this.items.length-1;i >= 0; i--) {
-		  this.items[i].update();
 		  this.collisionListener(this.items[i], i);
-		  if(this.items[i].x < -(2*this.radius)) this.deleteItem(i);
+		  this.items[i].update();
+		  // delete if out of screen
+		  if(this.items[i].loc.x < -(2*this.radius)) this.deleteItem(i);
 	  }
+	  // this.hero.display();
 	  this.drawScore();
-	  // delete empty objects from array.
-	  this.items.clean(undefined);
 	},
 	
 	spawnItem: function(x, y) {
@@ -27,7 +28,7 @@ var ItemHandler =  Class({
 	},
 
 	deleteItem: function(index) {
-	  //use shift to shift all other items in array one place up
+	  // delete first item from array
 	  this.items.shift(index);
 	},
 
@@ -37,22 +38,26 @@ var ItemHandler =  Class({
       this.ctx.fillText("Score: " + this.score, 8, 20);
     },
 
+	//FUCKING UNDEFINED??
 	collisionListener: function(it, i) {
 	  var dist_vec = Vector2D.fromPoints(this.hero.loc, it.loc);
 	  var dist = dist_vec.length();
+	  // if collision detected
 	  if(dist < (it.r + this.hero.r)) {
 		this.score++;
-		this.items.splice(1, i);
+		this.items.remove(i);
+		// apply Force in other direction
+		// this.hero.applyForce(new Vector2D(0,-dist_vec.y));
+		// this.speed -= dist_vec.x;
+		this.hero.applyForce(new Vector2D(dist_vec.x, -dist_vec.y));
 	  }
     }
 });
 
-Array.prototype.clean = function(deleteValue) {
-	for (var i = 0; i < this.length; i++) {
-		if (this[i] == deleteValue) {
-			this.splice(i, 1);
-			i--;
-		}
-	}
-	return this;
+// Array Remove - By John Resig (MIT Licensed)
+Array.prototype.remove = function(from, to) {
+	  var rest = this.slice((to || from) + 1 || this.length);
+	  this.length = from < 0 ? this.length + from : from;
+	  return this.push.apply(this, rest);
 };
+
