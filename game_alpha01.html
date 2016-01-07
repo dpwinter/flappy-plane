@@ -19,17 +19,18 @@
   <script type='text/javascript', src='vector.js'></script>
   <!-- Hero Class -->
   <script type='text/javascript', src='Hero.js'></script>
-  <!-- Camera Class -->
-  <script type='text/javascript', src='Camera.js'></script>
 
   <canvas id="myCanvas" width="480" height="320"></canvas>
 
   <script>
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
-    var hero = new Hero(100, canvas.height/2, 20, ctx);
+    var hero = new Hero(canvas.width/2, canvas.height/2, 20, ctx);
     var item_handler = new ItemHandler(hero, ctx);
-    var cam = new Camera(canvas, ctx, hero);
+
+    var speed = 2;
+
+    window.addEventListener('keydown', item_handler.userInput, false);
 
     var score = 0;
     var lives = 3;
@@ -55,14 +56,13 @@
         iterLimit = getRandom(50, 200);
       }
 
-//      cam.update();
       hero.display();
       //ctx.translate(hero.loc.x, 0);
       item_handler.update();
     }
 
     // frameRate every 10 miliseconds
-    setInterval(draw, 10);
+    setInterval(draw, 30);
 
     function getRandom(min, max) {
       return Math.random() * (max - min) + min;

@@ -13,9 +13,8 @@ var ItemHandler =  Class({
 	update: function() {
 	  for(i=this.items.length-1;i >= 0; i--) {
 		  this.collisionListener(this.items[i], i);
-		  this.items[i].update();
-		  // delete if out of screen
 		  if(this.items[i].loc.x < -(2*this.radius)) this.deleteItem(i);
+		  this.items[i].update();
 	  }
 	  // this.hero.display();
 	  this.drawScore();
@@ -49,9 +48,22 @@ var ItemHandler =  Class({
 		// apply Force in other direction
 		// this.hero.applyForce(new Vector2D(0,-dist_vec.y));
 		// this.speed -= dist_vec.x;
-		this.hero.applyForce(new Vector2D(dist_vec.x, -dist_vec.y));
+		// this.hero.applyForce(new Vector2D(dist_vec.x, -dist_vec.y));
+		var drag = 8;
+		this.hero.applyForce(new Vector2D(0, -dist_vec.y * drag));
+	  } else {
+		// apply gravity
+	    this.hero.applyForce(new Vector2D(0, 0.5));
 	  }
-    }
+    },
+	
+	userInput: function(e) {
+		if(e.keyCode == 38){
+		  this.hero.velo = new Vector2D(0,0);
+		  // this.hero.acc = new Vector2D(0, -2.5);
+		  this.hero.applyForce(new Vector2D(0, -50));
+		}
+	}
 });
 
 // Array Remove - By John Resig (MIT Licensed)

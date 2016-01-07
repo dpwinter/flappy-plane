@@ -17,7 +17,7 @@ var Item = Class({
   },
   
   update: function() {
-	this.loc.x -= this.speed;
+	this.loc.x -= speed;
 	this.render();
   }
 
