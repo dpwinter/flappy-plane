@@ -5,7 +5,7 @@ var Hero = Class({
 	  this.velo = new Vector2D(0,0);
 	  this.acc = new Vector2D(0,0);
 	  this.r = 20;
-	  this.mass = 40;
+	  this.mass = 10;
 	  this.fill = "#FF0000";
 	},
 

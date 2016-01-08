@@ -171,13 +171,12 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
 set shortmess=aoO
-badd +5 Camera.js
 badd +1 GameHandler.js
 badd +1 Hero.js
 badd +1 Item.js
 badd +1 java_class.js
 badd +1 vector.js
-badd +0 game_alpha01.html
+badd +1 game_alpha01.html
 args Camera.js GameHandler.js Hero.js Item.js java_class.js vector.js game_alpha01.html
 edit game_alpha01.html
 set splitbelow splitright
