@@ -9,108 +9,83 @@
   </style>
 </head>
 <body>
-  <!-- Java class construct -->
-  <!-- <script type='text/javascript', src='java_class.js'></script> -->
-  <!-- Items to Pick up -->
-  <!-- <script type='text/javascript', src='Item.js'></script> -->
-  <!-- Item Handler Class -->
-  <!-- <script type='text/javascript', src='GameHandler.js'></script> -->
   <!-- Vector library -->
   <script type='text/javascript', src='vector.js'></script>
-  <!-- Hero Class -->
-  <!-- <script type='text/javascript', src='Hero.js'></script> -->
-
+  <!-- Game Object Parent Class -->
   <script type='text/javascript', src='GameObject.js'></script>
+  <!-- Game Controller handles all events -->
+  <script type='text/javascript', src='GameController.js'></script>
 
   <canvas id="myCanvas" width="800" height="640"></canvas>
 
   <script>
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
-    //var game = new GameHandler(ctx, canvas);
-    var pause = false;
-    var flap = false;
-    var flapTime = 15;
-    var flapElapsed = 0;
+    var ctrl = new GameController();
+    ctrl.initialize();
     window.addEventListener('keydown', this.userInput, false);
 
+    var pause = false;
+    var flapable = false;
+    var gameOver = false;
+    var frameCount = 0;
 
-    function Hero() {};
-    Hero.prototype = new GameObject('#FF0000', new Vector2D(canvas.width/2, canvas.height/2), 10, 10);
+    var gravity = new Vector2D(0,5);
+    var velocity = new Vector2D(-5, 0);
 
-    var force = new Vector2D(0,0);
-
-    Hero.prototype.wrap = function() {
-      this.velocity = -this.velocity;
+    function setup() {
+      ctrl = new GameController();
+      ctrl.initialize();
     }
-
-    Hero.prototype.update = function(force) {
-      var f = new Vector2D(0, force.y);
-      GameObject.prototype.update.call(this, f);
-      // return wrap() is inconvinient!
-      return this.outOfBounds()? this.wrap() : this.location;
-    }
-
-    var canvasOffset = canvas.width + 20;
-    var randomHeight = 50;
-    function Item() {};
-    Item.prototype = new GameObject('#FF0000', new Vector2D(canvasOffset, randomHeight, 10, 5));
-
-
-    Item.prototype.update = function(force) {
-      var f = new Vector2D(force.x, 0);
-      GameObject.prototype.update.call(this, f);
-      // 0 is the mark for deletion.
-      return this.outOfBounds? 0 : this.location;
-    }
-
-var h = new Hero();
-var i = new Item();
-  console.log(i.update);
 
     function draw() {
-      if (!pause) {
-        // clear the content every iteration.
-        ctx.clearRect(0,0,canvas.width, canvas.height);
-        //game.update();
-        //Hero.update(force);
-      h.update(force);
-      h.draw();
-      } else {
-        renderPause();
+      if(gameOver) {
+        setup();
+        gameOver = false;
       }
-      flapElapsed++;
-      if (flapElapsed > flapTime) {
-        flap = false;
-        flapElapsed = 0;
-      }
+      else {
+        if (!pause) {
 
+          ctx.clearRect(0,0,canvas.width, canvas.height);
+          frameCount++;
+
+          if (frameCount % 15 == 0) flapable = true;
+          if (frameCount % 60 == 0) ctrl.spawnItem(velocity);
+          ctrl.update(gravity);
+
+        } else ctrl.drawPause();
+      }
     }
 
-    // frameRate every 10 miliseconds
-    setInterval(draw, 30);
+    // 30 fps
+    setInterval(draw, (1000 / 30));
 
-    function renderPause() {
-        ctx.font = "30px Arial";
-        ctx.fillStyle = "#4dd2ff";
-        ctx.textAlign = "center";
-        ctx.fillText("PAUSE", canvas.width/2, canvas.height/2);
-      }
-
+    <!-- KEYBOARD INPUT CONTROLS -->
 
     function userInput(e) {
-      // press space bar
-      if(e.keyCode == 32 && !flap) {
-//        game.hero.velo = new Vector2D(0,0);
-        // up force
-//        game.hero.applyForce(game.upforce);
-        flap = true;
+      // space for flap
+      if(e.keyCode == 32 && flapable) {
+        ctrl.hero.flap();
+        flapable = false;
       }
-      else if (e.keyCode == 80) {
-        pause = !pause;
-      }
+      // p for pause
+      else if (e.keyCode == 80) pause = !pause;
+      // r for restart
+      else if (e.keyCode == 82) gameOver = true;
+
     }
 
+    <!-- HELPER METHODS -->
+    
+    function getRandom(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    Array.prototype.remove = function(from, to) {
+      var rest = this.slice((to || from) + 1 || this.length);
+      this.length = from < 0 ? this.length + from : from;
+      return this.push.apply(this, rest);
+    }
   </script>
 
 </body>

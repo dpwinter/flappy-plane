@@ -72,7 +72,6 @@ Vector2D.prototype.multiplyEquals = function(scalar) {
     return this;
 };
 
-
 Vector2D.prototype.divide = function(scalar) {
     return new Vector2D(this.x / scalar, this.y / scalar);
 };

@@ -8,20 +8,33 @@ var GameObject = function GameObject(c, loc, m, rad) {
 }
 
 GameObject.prototype = {
+	setLocation: function(loc) {
+				this.location = loc;
+			},
+
+	setVelocity: function(velo) {
+				this.velocity = velo;
+			},
+
 	update: function(force) {
-				// mult by (0,0) equals NaN in JS.
-				// this.applyForce(force);
+				if(force!=undefined) this.applyForce(force);
 				this.move();
 			},
 
 	outOfBounds: function() {
-				if(this.location.x < 0 || this.location.y > canvas.height || this.location.y < 0) return true;
-				else return false;
+				var x = this.location.x;
+				var y = this.location.y;
+				var rad = this.radius;
+				var offsetWidth = canvas.width + rad + 2;
+				var offsetHeight = canvas.height + rad;
+				if(x > rad && x < offsetWidth && y > rad && y < offsetHeight)
+					 return false;
+				else return true;
 			 },
 	
 	applyForce: function(force) {
 				var f = force.divide(this.mass);
-				this.acceleration.multiplyEquals(f);
+				this.acceleration.addEquals(f);
 			},
 
 	move: function() {
