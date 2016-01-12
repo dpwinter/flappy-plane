@@ -2,6 +2,8 @@ var GameController = function GameController() {
 	this.itemlist = [];
 	this.hero;
 	this.score = 0;
+	this.BGOffset = 0;
+	this.BGSpeed = 1;
 }
 	
 GameController.prototype = {
@@ -10,7 +12,7 @@ GameController.prototype = {
 	Item: function() {},
 
 	defineHero: function() {
-		this.Hero.prototype = new GameObject('#FF0000', new Vector2D(canvas.width/2, canvas.height/2), 3, 10);
+		this.Hero.prototype = new GameObject('#FFFFFF', new Vector2D(canvas.width/2, canvas.height/2), 3, 10);
 
 		this.Hero.prototype.wrap = function() {
 			// this.velocity.multiplyEquals(-1);
@@ -85,9 +87,11 @@ GameController.prototype = {
 	},
 
 	drawAll: function() {
+		this.drawBackground();
 		this.drawItems();
 		this.hero.draw();
 		this.drawScore();
+		this.drawInfo();
     },
 
 	drawItems: function() {
@@ -96,16 +100,31 @@ GameController.prototype = {
 
 	drawScore: function() {
 	   ctx.font = "16px Arial";
-	   ctx.fillStyle = "#0098cc";
+	   ctx.fillStyle = "#FFFFFF";
 	   ctx.textAlign = "left";
 	   ctx.fillText("Score: " + this.score, 8, 20);
     },
 
 	drawPause: function() {
         ctx.font = "30px Arial";
-        ctx.fillStyle = "#4dd2ff";
+        ctx.fillStyle = "#FFFFFF";
         ctx.textAlign = "center";
         ctx.fillText("PAUSE", canvas.width/2, canvas.height/2);
-    }
+    },
+
+	drawInfo: function() {
+		ctx.font = "16px Arial";
+		ctx.fillStyle = "#FFFFFF";
+		ctx.textAlign = "right";
+		ctx.fillText("Press 'P' for Pause, 'R' for Restart & 'Space' for Jump.", canvas.width - 20, canvas.height -20);
+    },
+
+	drawBackground: function() {
+		this.BGOffset -= this.BGSpeed;
+		if(this.BGOffset < -canvas.width) this.BGOffset = 0;
+		ctx.drawImage(background, this.BGOffset, 0);
+		ctx.drawImage(background, this.BGOffset + canvas.width, 0);
+		// ctx.drawImage(sun,  0, 0);
+	}
 }
 
